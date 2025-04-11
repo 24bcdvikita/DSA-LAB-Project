@@ -1,0 +1,92 @@
+#Code
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_FLIGHTS 3
+#define MAX_SEATS 5
+
+typedef struct {
+int flightNumber;
+char passengerName[50];
+int seatNumber;
+} Reservation;
+
+Reservation reservations[MAX_FLIGHTS][MAX_SEATS];
+int seatAvailability[MAX_FLIGHTS] =
+{MAX_SEATS, MAX_SEATS, MAX_SEATS};
+// Function to display available flights
+void displayFlights() {
+printf("\nAvailable Flights:\n");
+printf("1. Flight 101\n");
+printf("2. Flight 202\n");
+printf("3. Flight 303\n");
+}
+// Function to book a ticket
+void bookTicket() {
+    int flight, seat;
+    char name[50];
+
+    displayFlights();
+    printf("\nEnter Flight Number (1-3): ");
+    scanf("%d", &flight);
+     if (flight < 1 || flight > MAX_FLIGHTS || seatAvailability[flight - 1] == 0) {
+        printf("Invalid selection or no available seats!\n");
+        return;
+}
+
+    printf("Enter Passenger Name: ");
+    scanf(" %[^\n]", name);
+seat = MAX_SEATS - seatAvailability[flight - 1] + 1;
+    reservations[flight - 1][seat - 1].flightNumber = flight;
+strcpy(reservations[flight - 1][seat - 1].passengerName, name);
+    reservations[flight - 1][seat - 1].seatNumber = seat;
+seatAvailability[flight - 1]--;
+    printf("Ticket booked successfully! Seat Number: %d\n", seat);
+}
+// Function to cancel a ticket
+void cancelTicket() {
+    int flight, seat;
+    displayFlights();
+    
+    printf("\nEnter Flight Number: ");
+    scanf("%d", &flight);
+    printf("Enter Seat Number: ");
+    scanf("%d", &seat);
+if (flight < 1 || flight > MAX_FLIGHTS || seat < 1 || seat > MAX_SEATS || reservations[flight - 1][seat - 1].seatNumber == 0) {
+        printf("Invalid flight or seat number!\n");
+        return;
+    }// Cancel the ticket (reset reservation)reservations[flight - 1][seat - 1].flightNumber = 0;
+    strcpy(reservations[flight - 1][seat - 1].passengerName, "");
+    reservations[flight - 1][seat - 1].seatNumber = 0;
+
+    seatAvailability[flight - 1]++;
+
+    printf("Ticket canceled successfully!\n");
+}
+
+// Main Menu
+int main() {
+    int choice;
+    do {
+        printf("\n--- Airline Reservation System ---\n");
+        printf("1. View Available Flights\n");
+        printf("2. Book a Ticket\n");
+        printf("3. Cancel a Ticket\n");
+        printf("4. Display Booked Tickets\n");
+        printf("5. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1: displayFlights(); break;
+            case 2: bookTicket(); break;
+            case 3: cancelTicket(); break;
+            case 4: displayBookedTickets(); break;
+            case 5: printf("Exiting... Thank you!\n"); break;
+            default: printf("Invalid choice! Try again.\n");
+        }
+    } while (choice != 5);
+    return 0;
+}
